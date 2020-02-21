@@ -72,7 +72,7 @@ plt.show()
 
 model = keras.Sequential([
     keras.layers.Flatten(input_shape=(28, 28)),
-    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dense(300, activation='relu'),
     keras.layers.Dense(10, activation='softmax')
 ])
 
@@ -84,24 +84,26 @@ model.compile(optimizer='adam',
 
 # Train the model
 
-model.fit(fashion_train_images, fashion_train_labels, epochs=10)
+model.fit(fashion_train_images, fashion_train_labels, epochs=200)
+
+# Test size
+print('Test size: ',len(digit_test_images))
 
 # Evaluate accuracy
-test_loss, test_acc = model.evaluate(fashion_test_images,  fashion_test_labels, verbose=2)
+test_loss, test_acc = model.evaluate(digit_test_images,  digit_test_labels, verbose=2)
 
-p = model.predict(fashion_test_images)
-p = np.argmax(p,axis=10)
-test_acc1 = 1-np.count_nonzero(p-fashion_test_labels)/len(fashion_test_labels)
+p = model.predict(digit_test_images)
+p = np.argmax(p,axis=1)
+test_acc1 = 1-np.count_nonzero(p-digit_test_labels)/len(digit_test_labels)
 
 
 print('\nTest accuracy (original):', test_acc, '\nTest accuracy (manual):', test_acc1)
 
-# Plot accuracy
 
+# Plot accuracy
 x = np.arange(2)
 plt.bar(x, height= [test_acc , 1-test_acc])
 plt.xticks(x, ['Correct', 'Incorrect'])
-
 
 
 # Make predictions

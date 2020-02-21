@@ -91,7 +91,6 @@ print('\nTest accuracy:', test_acc)
 
 
 # Plot accuracy¶
-
 x = np.arange(2)
 plt.bar(x, height= [test_acc , 1-test_acc])
 plt.xticks(x, ['Correct', 'Incorrect'])
@@ -199,3 +198,10 @@ np.argmax(predictions_single[0])
 
 
 
+
+# Plot accuracy histogram
+
+#digit_minst.drop('digit_test_labels' ,axis=1).hist(bins=30, figsize=(9,9))
+#pl.suptitle("Histogram for each numeric input variable")
+#plt.savefig('digit_hist')
+#plt.show()
