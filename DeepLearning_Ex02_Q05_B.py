@@ -9,9 +9,11 @@ from tensorflow import keras
 import numpy as np
 import matplotlib.pyplot as plt
 
+import pylab as pl
+
 print(tf.__version__)
 
-#Import the Fashion MNIST dataset¶
+#Import the Fashion MNIST dataset
 
 digit_minst = keras.datasets.mnist
 fashion_mnist = keras.datasets.fashion_mnist
@@ -28,7 +30,7 @@ fashion_class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 
 
-# Explore the data¶
+# Explore the data
 
 fashion_train_images.shape
 
@@ -41,7 +43,7 @@ fashion_test_images.shape
 len(fashion_test_labels)
 
 
-#Preprocess the data¶
+#Preprocess the data
 
 plt.figure()
 plt.imshow(fashion_train_images[0])
@@ -64,9 +66,9 @@ for i in range(25):
 plt.show()
 
 
-# Build the model¶
+# Build the model
 
-# Set up the layers¶
+# Set up the layers
 
 model = keras.Sequential([
     keras.layers.Flatten(input_shape=(28, 28)),
@@ -74,24 +76,27 @@ model = keras.Sequential([
     keras.layers.Dense(10, activation='softmax')
 ])
 
-# Compile the model¶
+# Compile the model
 
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-# Train the model¶
+# Train the model
 
 model.fit(fashion_train_images, fashion_train_labels, epochs=10)
 
-# Evaluate accuracy¶
-
+# Evaluate accuracy
 test_loss, test_acc = model.evaluate(fashion_test_images,  fashion_test_labels, verbose=2)
 
-print('\nTest accuracy:', test_acc)
+p = model.predict(fashion_test_images)
+p = np.argmax(p,axis=10)
+test_acc1 = 1-np.count_nonzero(p-fashion_test_labels)/len(fashion_test_labels)
 
 
-# Plot accuracy¶
+print('\nTest accuracy (original):', test_acc, '\nTest accuracy (manual):', test_acc1)
+
+# Plot accuracy
 
 x = np.arange(2)
 plt.bar(x, height= [test_acc , 1-test_acc])
@@ -99,7 +104,7 @@ plt.xticks(x, ['Correct', 'Incorrect'])
 
 
 
-# Make predictions¶
+# Make predictions
 predictions = model.predict(digit_test_images)
 predictions[0]
 np.argmax(predictions[0])
@@ -155,6 +160,7 @@ plot_value_array(i, predictions[i],  digit_test_labels)
 plt.show()
 
 
+
 # Plot the first X test images, their predicted labels, and the true labels.
 # Color correct predictions in blue and incorrect predictions in red.
 num_rows = 5
@@ -200,3 +206,9 @@ _ = plt.xticks(range(10), digit_class_names, rotation=45)
 np.argmax(predictions_single[0])
 
 
+# Plot accuracy histogram
+
+#digit_minst.drop('digit_test_labels' ,axis=1).hist(bins=30, figsize=(9,9))
+#pl.suptitle("Histogram for each numeric input variable")
+#plt.savefig('digit_hist')
+#plt.show()
