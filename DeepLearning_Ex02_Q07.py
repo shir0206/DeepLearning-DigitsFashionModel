@@ -13,7 +13,7 @@ from keras.models import Model
 from keras import backend as K
 
 import sys
-#sys.stdout = open('file.txt', 'w')
+sys.stdout = open('file.txt', 'w')
 
 from tensorflow import keras
 from keras.models import Model
@@ -245,16 +245,19 @@ from tensorflow import keras as K
 #my_input_data = np.random.rand(my_input_shape)
 my_input_data = train_images
 new_temp_model = K.Model(model.input, model.layers[1].output) #replace 3 with index of desired layer
-output_of_3rd_layer = new_temp_model.predict(my_input_data) #this is what you want
+output_of_2nd_layer = new_temp_model.predict(my_input_data) #this is what you want
+output_of_2nd_layer_flatten = output_of_2nd_layer.flatten()
+np.set_printoptions(threshold=sys.maxsize) # print options
 
-#np.set_printoptions(threshold=sys.maxsize) # print options
 #np.set_printoptions(threshold=np.inf)
-print('output_of_3rd_layer',output_of_3rd_layer) #print
+print('output_of_2nd_layer',output_of_2nd_layer,'output_of_2nd_layer') #print
 
 ############################################################################################
 
 my_input = tf.random.normal((1, 28, 28)) # Should be like the standard input to your network
+#output_of_flatten = model.get_layer('flatten')(my_input)
 output_of_flatten = model.get_layer('flatten')(my_input)
+
 output_of_hidden = model.get_layer('hidden')(output_of_flatten)
 print('output_of_hidden',output_of_hidden)
 #with tf.Session() as sess:
