@@ -9,6 +9,9 @@ from tensorflow import keras
 import numpy as np
 import matplotlib.pyplot as plt
 
+import sys
+sys.stdout = open('Q3.txt', 'w')
+
 print(tf.__version__)
 
 #Import the Fashion MNIST dataset¶

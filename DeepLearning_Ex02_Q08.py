@@ -9,10 +9,24 @@ from tensorflow import keras
 import numpy as np
 import matplotlib.pyplot as plt
 
+from keras.models import Model
+from keras import backend as K
+
 import sys
-sys.stdout = open('Q6.txt', 'w')
+sys.stdout = open('Q8.txt', 'w')
+
+from tensorflow import keras
+from keras.models import Model
+print(Model.__module__) #outputs 'keras.engine.training'
+
+from tensorflow.keras.models import Model
+print(Model.__module__) #outputs 'tensorflow.python.keras.engine.training'
 
 print(tf.__version__)
+
+session = keras.backend.get_session()
+init = tf.global_variables_initializer()
+session.run(init)
 
 #Import the Fashion MNIST dataset¶
 
@@ -72,7 +86,16 @@ for number in range(0, 100, 1):
     # Create new image
     img_new = ((img1 * alpha) + (img2 * (1 - alpha))) / 2
 
-    print(img_new)
+
+    if (number == 2):
+
+        print('\n','img_new (i=2):', img_new)
+
+        plt.figure()
+        plt.imshow(img_new)
+        plt.colorbar()
+        plt.grid(False)
+        plt.show()
 
     if (number < 50):
         label_new = label2
@@ -138,10 +161,11 @@ plt.show()
 # Set up the layers¶
 
 model = keras.Sequential([
-    keras.layers.Flatten(input_shape=(28, 28)),
-    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Flatten(input_shape=(28, 28), name='flatten'),
+    keras.layers.Dense(128, activation='relu', name='hidden'),
     keras.layers.Dense(10, activation='softmax')
 ])
+
 
 # Compile the model¶
 
@@ -155,9 +179,49 @@ model.compile(optimizer='adam',
 
 model.fit(train_images, train_labels, epochs=10)
 
+
+# Print second layer
+
+from tensorflow import keras as K
+
+# Extract the second layer of each image from the test dataset
+my_input_data = test_images_with_alpha
+
+last_layer = len(model.layers)-1
+print('last_layer', last_layer)
+
+new_temp_model = K.Model(model.input, model.layers[last_layer].output) #replace 3 with index of desired layer
+output_of_last_layer = new_temp_model.predict(my_input_data) #this is what you want
+output_of_last_layer_flatten = output_of_last_layer.flatten()
+
+np.set_printoptions(threshold=np.inf) #Print all results
+print('output_of_last_layer len=', len(output_of_last_layer))  # print test size
+
+list_of_max_index = []
+
+for i in range (len(output_of_last_layer)):
+    output_of_last_layer_of_img = output_of_last_layer[i]
+    max_value = np.amax(output_of_last_layer_of_img)
+    #max_index = output_of_last_layer_of_img.index(max_value)
+    for j in range (len(output_of_last_layer_of_img)):
+        if output_of_last_layer_of_img[j] == max_value:
+            max_index = j
+            list_of_max_index.append(j)
+            break
+
+
+    print('\n','\n','output_of_last_layer, i=', i, '\n',' output =' ,output_of_last_layer_of_img,'\n','max_value',max_value,'\n','max_index',max_index) #print layers
+
+print('\n', 'list_of_max_index', list_of_max_index)
+
+
 # Evaluate accuracy¶
 print('Test images', test_images_with_alpha)
 print('Test labels', test_labels_with_alpha)
+print (type(test_labels_with_alpha))
+
+test_labels_with_alpha_list = np.array(test_labels_with_alpha)
+
 
 test_loss, test_acc = model.evaluate(test_images_with_alpha,  test_labels_with_alpha, verbose=2)
 
@@ -165,7 +229,14 @@ p = model.predict(test_images_with_alpha)
 p = np.argmax(p,axis=1)
 test_acc1 = 1-np.count_nonzero(p-test_labels_with_alpha)/len(test_labels_with_alpha)
 
-print('\nTest accuracy (original):', test_acc, '\nTest accuracy (manual):', test_acc1)
+check_acc = 0
+for k in range (len(test_labels_with_alpha_list)):
+    if list_of_max_index[k] == test_labels_with_alpha_list[k]:
+        check_acc += 1
+
+test_acc_from_last_layer = check_acc / len(test_labels_with_alpha_list)
+
+print('\nTest accuracy (original):', test_acc, '\nTest accuracy (manual):', test_acc1, '\nTest accuracy calculated from last layer :', test_acc_from_last_layer)
 
 
 # Plot accuracy¶

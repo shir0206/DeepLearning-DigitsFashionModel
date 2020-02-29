@@ -13,7 +13,7 @@ from keras.models import Model
 from keras import backend as K
 
 import sys
-sys.stdout = open('file.txt', 'w')
+sys.stdout = open('Q7.txt', 'w')
 
 from tensorflow import keras
 from keras.models import Model
@@ -89,7 +89,7 @@ for number in range(0, 100, 1):
 
     if (number == 2):
 
-        print('img_new (i=2):', img_new)
+        print('\n','img_new (i=2):', img_new)
 
         plt.figure()
         plt.imshow(img_new)
@@ -183,85 +183,32 @@ model.compile(optimizer='adam',
 model.fit(train_images, train_labels, epochs=10)
 
 
-###################################### Print second layer ######################################
-
-# #################################################################################################
-# # First trial
-# print('model.layers[0]', model.layers[0])
-# for layer in model.layers:
-#
-#     get_2nd_layer_output = K.function([model.layers[0].input],[model.layers[2].output])
-#     layer_output = get_2nd_layer_output(layer)[0]
-#     print('\nlayer output: get_2nd_layer_output=, layer=', layer, '\nlayer output: get_2nd_layer_output=', get_2nd_layer_output)
-# #################################################################################################
-
-# # Second trial
-# input_shape=(28, 28)
-# inp = model.input                                           # input placeholder
-# outputs = [layer.output for layer in model.layers]          # all layer outputs
-# functor = K.function([inp, K.learning_phase()], outputs )   # evaluation function
-#
-# # Testing
-# test = np.random.random(input_shape)[np.newaxis,...]
-# layer_outs = functor([test, 0.])
-# print('layer_outs',layer_outs)
-#################################################################################################
-
-# model2= Model(model.input,model.layers[2].output)
-# print('model2 A' , model2)
-#
-# model2= Model(model.input,model.get_layer('dense_5').output)
-# print('model2 B' , model2)
-
-
-#################################################################################################
-
-# from tensorflow import keras as K
-# my_input_shape=train_images
-# my_input_data = np.random.rand(my_input_shape)
-# new_temp_model = K.Model(model.input, model.layers[2].output) #replace 3 with index of desired layer
-# output_of_3rd_layer = new_temp_model.predict(my_input_data) #this is what you want
-# print('output_of_3rd_layer' , output_of_3rd_layer)
-#################################################################################################
-
-from keras.layers import Input
-
-# input_shape = Input(shape=(784,))
-#
-# my_input = input_shape # Should be like the standard input to your network
-# output_of_flatten=(model.layers[0])
-#
-# #output_of_flatten = model.get_layer(name='flatten')(my_input)
-# output_of_hidden = model.layers[1](output_of_flatten)
-#
-# print ('output_of_hidden', output_of_hidden)
-
-
-
-############################################################################################
+# Print second layer
 
 from tensorflow import keras as K
-#my_input_shape=(28, 28)
-#my_input_data = np.random.rand(my_input_shape)
-my_input_data = train_images
+
+# Extract the second layer of each image from the test dataset
+my_input_data = test_images
+
 new_temp_model = K.Model(model.input, model.layers[1].output) #replace 3 with index of desired layer
 output_of_2nd_layer = new_temp_model.predict(my_input_data) #this is what you want
 output_of_2nd_layer_flatten = output_of_2nd_layer.flatten()
-np.set_printoptions(threshold=sys.maxsize) # print options
 
-#np.set_printoptions(threshold=np.inf)
-print('output_of_2nd_layer',output_of_2nd_layer,'output_of_2nd_layer') #print
+np.set_printoptions(threshold=np.inf) #Print all results
+print('output_of_2nd_layer len=', len(output_of_2nd_layer))  # print test size
+
+for i in range (len(output_of_2nd_layer)):
+    print('\n','\n','output_of_2nd_layer, i=', i, ' output =' ,output_of_2nd_layer[i]) #print layers
 
 ############################################################################################
 
-my_input = tf.random.normal((1, 28, 28)) # Should be like the standard input to your network
-#output_of_flatten = model.get_layer('flatten')(my_input)
-output_of_flatten = model.get_layer('flatten')(my_input)
-
-output_of_hidden = model.get_layer('hidden')(output_of_flatten)
-print('output_of_hidden',output_of_hidden)
-#with tf.Session() as sess:
-#    print(output_of_hidden.eval())
+# my_input = tf.random.normal((1, 28, 28)) # Should be like the standard input to your network
+# output_of_flatten = model.get_layer('flatten')(my_input)
+#
+# output_of_hidden = model.get_layer('hidden')(output_of_flatten)
+# #print('output_of_hidden img1=',output_of_hidden)
+# with session.as_default():
+#     print('\n','output_of_hidden  img1=',output_of_hidden.eval())
 
 #################################################################################################
 # Evaluate accuracy¶

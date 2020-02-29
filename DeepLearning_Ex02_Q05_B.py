@@ -11,6 +11,9 @@ import matplotlib.pyplot as plt
 
 import pylab as pl
 
+import sys
+sys.stdout = open('Q5B.txt', 'w')
+
 print(tf.__version__)
 
 #Import the Fashion MNIST dataset
